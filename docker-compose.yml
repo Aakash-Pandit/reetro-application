@@ -3,8 +3,8 @@ services:
     build:
       context: .
       dockerfile: ./compose/postgres/Dockerfile
-    image: reetro_postgres
-    container_name: reetro_postgres
+    image: reetro_postgres_application
+    container_name: reetro_postgres_application
     volumes:
       - postgres_data:/var/lib/postgresql/data:Z
       - postgres_data_backups:/backups:z
@@ -15,7 +15,7 @@ services:
 
   redis:
     image: redis:6-alpine
-    container_name: reetro_redis
+    container_name: reetro_redis_application
     ports:
       - "6379:6379"
     depends_on:
@@ -25,8 +25,8 @@ services:
     build:
       context: .
       dockerfile: ./compose/backend/Dockerfile
-    image: reetro_golang_app
-    container_name: reetro_golang_app
+    image: reetro_golang_application
+    container_name: reetro_golang_application
     depends_on:
       - postgres
       - redis
