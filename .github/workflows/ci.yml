@@ -1,0 +1,59 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      APPLICATION_PORT: "8080"
+      POSTGRES_HOST: "localhost"
+      POSTGRES_PORT: "5432"
+      POSTGRES_DB: "reetro_app"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+      POSTGRES_SSL_MODE: "disable"
+      REDIS_HOST: "localhost"
+      REDIS_PORT: "6379"
+      JWT_SECRET_KEY: "ci_jwt_secret"
+      EMAIL_ID: "ci@example.com"
+      EMAIL_PASSWORD: "ci_password"
+      EMAIL_HOST: "smtp.example.com"
+      EMAIL_PORT: "587"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.25.7"
+          cache: true
+
+      - name: Download dependencies
+        run: go mod download
+
+      - name: Run tests with coverage (only packages with _test.go)
+        run: |
+          set -euo pipefail
+          packages=$(go list -f '{{if .TestGoFiles}}{{.ImportPath}}{{end}}' ./... | sed '/^$/d')
+          if [ -z "${packages}" ]; then
+            echo "No test packages found."
+            exit 0
+          fi
+          echo "Running tests for:"
+          echo "${packages}"
+          echo "${packages}" | xargs go test -v -coverprofile=coverage.out -covermode=atomic
+
+      - name: Coverage summary
+        if: always()
+        run: |
+          if [ -f coverage.out ]; then
+            go tool cover -func=coverage.out | tail -n 1
+          else
+            echo "No coverage report generated."
+          fi

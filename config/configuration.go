@@ -10,7 +10,7 @@ import (
 func ReadEnvironmentVariables() error {
 	log.Println("Reading all the env variables")
 
-	dir, _ := os.Open("./.envs/.env")
+	dir, _ := os.Open("./.env")
 	err := godotenv.Load(dir.Name())
 	if err != nil {
 		log.Println("err:", err)
