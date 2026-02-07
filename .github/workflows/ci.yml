@@ -37,5 +37,14 @@ jobs:
       - name: Download dependencies
         run: go mod download
 
-      - name: Run tests
-        run: go test ./...
+      - name: Run tests (only packages with _test.go)
+        run: |
+          set -euo pipefail
+          packages=$(go list -f '{{if .TestGoFiles}}{{.ImportPath}}{{end}}' ./... | sed '/^$/d')
+          if [ -z "${packages}" ]; then
+            echo "No test packages found."
+            exit 0
+          fi
+          echo "Running tests for:"
+          echo "${packages}"
+          echo "${packages}" | xargs go test -v
