@@ -23,3 +23,8 @@ go.work.sum
 
 local_data/
 tmp/
+.env
+.env.*
+.envs/*
+.envs/*.env
+.envs/.env

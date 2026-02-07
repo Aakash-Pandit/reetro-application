@@ -9,7 +9,7 @@ services:
       - postgres_data:/var/lib/postgresql/data:Z
       - postgres_data_backups:/backups:z
     env_file:
-      - ./.envs/.env
+      - ./.env
     ports:
       - "5400:5432"
 
@@ -25,7 +25,7 @@ services:
     build:
       context: .
       dockerfile: ./compose/backend/Dockerfile
-    image: reetro_golang
+    image: reetro_backend
     container_name: reetro_backend
     depends_on:
       - postgres
@@ -33,7 +33,7 @@ services:
     volumes:
       - .:/app:z
     env_file:
-      - ./.envs/.env
+      - ./.env
     ports:
       - "8080:8080"
 
