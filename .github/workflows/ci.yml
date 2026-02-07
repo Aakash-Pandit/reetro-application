@@ -37,7 +37,7 @@ jobs:
       - name: Download dependencies
         run: go mod download
 
-      - name: Run tests (only packages with _test.go)
+      - name: Run tests with coverage (only packages with _test.go)
         run: |
           set -euo pipefail
           packages=$(go list -f '{{if .TestGoFiles}}{{.ImportPath}}{{end}}' ./... | sed '/^$/d')
@@ -47,4 +47,13 @@ jobs:
           fi
           echo "Running tests for:"
           echo "${packages}"
-          echo "${packages}" | xargs go test -v
+          echo "${packages}" | xargs go test -v -coverprofile=coverage.out -covermode=atomic
+
+      - name: Coverage summary
+        if: always()
+        run: |
+          if [ -f coverage.out ]; then
+            go tool cover -func=coverage.out | tail -n 1
+          else
+            echo "No coverage report generated."
+          fi
