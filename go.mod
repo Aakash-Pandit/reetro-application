@@ -1,6 +1,6 @@
 module github.com/Aakash-Pandit/reetro-golang
 
-go 1.22.5
+go 1.25.7
 
 require (
 	github.com/go-playground/validator v9.31.0+incompatible

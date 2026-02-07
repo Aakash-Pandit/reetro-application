@@ -4,10 +4,13 @@ build:
 stop:
 	docker compose stop
 
-up:
+start:
 	make down
+	docker compose up -d postgres redis
 	make migrate-up
 	docker compose up --remove-orphans
+
+up: start
 
 down:
 	docker compose down --remove-orphans
@@ -40,6 +43,7 @@ prod-stop:
 prod-up:
 	make prod-stop
 	make prod-down
+	docker-compose up -d postgres redis
 	make prod-migrate-up
 	docker-compose up --remove-orphans -d
 
